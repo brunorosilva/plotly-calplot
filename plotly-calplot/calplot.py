@@ -4,23 +4,8 @@ from pandas.core.frame import DataFrame
 from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 
-# mock setup
-dummy_start_date = "2019-01-01"
-dummy_end_date = "2021-10-03"
-dummy_df = pd.DataFrame(
-    {
-        "ds": pd.date_range(dummy_start_date, dummy_end_date),
-        "y": np.random.randint(
-            0,
-            30,
-            (pd.to_datetime(dummy_end_date) - pd.to_datetime(dummy_start_date)).days
-            + 1,
-        ),
-    }
-)
 
-
-def year_calplot(data: DataFrame, month_lines, fig, row, title="", height=250):
+def year_calplot(data: DataFrame, year, fig, row, month_lines:bool=True, colorscale:str="greens", title="", height=500):
     month_names = list(data["ds"].dt.month_name().unique())
     month_days = []
     for month in data["ds"].dt.month.unique():
@@ -38,7 +23,7 @@ def year_calplot(data: DataFrame, month_lines, fig, row, title="", height=250):
         i.week if not (i.month == 1 and i.week > 50) else 0 for i in data["ds"]
     ]
     # 4cc417 green #347c17 dark green
-    colorscale = [[False, "#eeeeee"], [True, "#76cf63"]]
+    # colorscale = [[False, "#eeeeee"], [True, "#76cf63"]]
 
     # handle end of year
 
@@ -51,8 +36,9 @@ def year_calplot(data: DataFrame, month_lines, fig, row, title="", height=250):
             ygap=3,  # and this is used to make the grid-like apperance
             showscale=False,
             colorscale=colorscale,
-            hovertemplate="%{customdata}, <br>z=%{z}",
-            customdata=(data["ds"].astype(str),),
+            hovertemplate="%{customdata} <br>z=%{z}",
+            customdata=data["ds"].astype(str),
+            name=str(year)
         )
     ]
 
@@ -78,7 +64,6 @@ def year_calplot(data: DataFrame, month_lines, fig, row, title="", height=250):
     if row == 0:
         layout = go.Layout(
             title=title,
-            height=height,
             yaxis=dict(
                 showline=False,
                 showgrid=False,
@@ -119,7 +104,7 @@ def fill_empty_with_zeros(selected_year_data: DataFrame, year: int):
     return final_df
 
 
-def calplot(data: DataFrame):
+def calplot(data: DataFrame, height=250):
     unique_years = data["ds"].dt.year.unique()
     unique_years_amount = len(unique_years)
     fig = make_subplots(unique_years_amount, 1, subplot_titles=unique_years.astype(str))
@@ -127,8 +112,8 @@ def calplot(data: DataFrame):
         selected_year_data = data.loc[data["ds"].dt.year == year]
         selected_year_data = fill_empty_with_zeros(selected_year_data, year)
 
-        year_calplot(selected_year_data, month_lines=True, fig=fig, row=i)
-        fig.update_layout(height=250 * len(unique_years))
+        year_calplot(selected_year_data, month_lines=True, year=year, fig=fig, row=i)
+        fig.update_layout(height=height * len(unique_years))
 
     return fig
 
@@ -136,6 +121,3 @@ def calplot(data: DataFrame):
 def twelve_months_calplot():
     pass
 
-
-fig = calplot(dummy_df)
-fig.show()

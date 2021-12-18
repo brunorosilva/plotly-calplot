@@ -1,5 +1,8 @@
 package := "plotly-calplot"
 
+app:
+	@poetry run streamlit run plotly-calplot/mock_example.py
+
 lint:
 	black .
 	isort .

@@ -11,9 +11,10 @@ TODO: upload the package to pypi
 # Examples
 TODO: write usage examples
 ```
-# graph_objects version
 from plotlycalplot import calplot
-fig.add_traces(calplot(df))
-```
+import plotly.graph_objects as go
 
-TODO: is it worth to make an express and graph_objects version of the calplot?
+fig = go.Figure()
+fig.add_traces(calplot(df, x="date", y="value"))
+fig.show()
+```

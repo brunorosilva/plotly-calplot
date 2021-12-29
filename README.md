@@ -9,7 +9,6 @@ The first mention I could find of this plot being made with plotly was in [this 
 TODO: upload the package to pypi
 
 # Examples
-TODO: write usage examples
 ```
 from plotlycalplot import calplot
 import plotly.graph_objects as go

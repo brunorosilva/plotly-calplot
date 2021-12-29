@@ -11,9 +11,8 @@ TODO: upload the package to pypi
 # Examples
 ```
 from plotlycalplot import calplot
-import plotly.graph_objects as go
 
-fig = go.Figure()
-fig.add_traces(calplot(df, x="date", y="value"))
+fig = calplot(df, x="date", y="value")
 fig.show()
+# you can also adjust layout and your usual plotly stuff
 ```

@@ -26,13 +26,17 @@ def year_calplot(
     row,
     month_lines,
     month_lines_width,
+    month_lines_color,
     colorscale,
     gap,
     title,
-    blackout,
+    dark_theme,
     width,
     each_plot_height=None,
 ):
+    """
+    Each year is subplotted separately and added to the main plot
+    """
     month_names = list(data[x].dt.month_name().unique())
     month_days = []
     for month in data[x].dt.month.unique():
@@ -51,11 +55,10 @@ def year_calplot(
         data[x].apply(lambda x: get_weeknumber_of_date(x)).values.tolist()
     )
 
-    # 4cc417 green #347c17 dark green
-    # colorscale = [[False, "#eeeeee"], [True, "#76cf63"]]
+    # helping plotly out so it doesn't confuses parameter y and column name y
+    value_column_name = str(y)
 
-    # handle end of year
-
+    # the calendar is actually a heatmap :)
     cplt = [
         go.Heatmap(
             x=weeknumber_of_dates,
@@ -64,9 +67,11 @@ def year_calplot(
             xgap=gap,  # this
             ygap=gap,  # and this is used to make the grid-like apperance
             showscale=False,
-            colorscale=colorscale,
-            hovertemplate="%{customdata} <br>{}=%{z} <br>x=%{x}",
-            customdata=data[x].astype(str),
+            colorscale=colorscale,  # user can setup their colorscale
+            hovertemplate="%{customdata[0]} <br>%{customdata[1]}=%{z} <br>Week=%{x}",
+            customdata=np.stack(
+                (data[x].astype(str), [value_column_name] * data.shape[0]), axis=-1
+            ),
             name=str(year),
         )
     ]
@@ -74,7 +79,7 @@ def year_calplot(
     if month_lines:
         kwargs = dict(
             mode="lines",
-            line=dict(color="#9e9e9e", width=month_lines_width),
+            line=dict(color=month_lines_color, width=month_lines_width),
             hoverinfo="skip",
         )
         for date, dow, wkn in zip(data[x], weekdays_in_year, weeknumber_of_dates):
@@ -93,7 +98,7 @@ def year_calplot(
                     ]
 
     #    if row == 0:
-    if blackout:
+    if dark_theme:
         layout = go.Layout(
             title=title,
             yaxis=dict(
@@ -157,12 +162,12 @@ def year_calplot(
     return fig
 
 
-def fill_empty_with_zeros(selected_year_data: DataFrame, x, blackout, year: int):
+def fill_empty_with_zeros(selected_year_data: DataFrame, x, dark_theme, year: int):
     year_min_date = "01-01-" + str(year)
     year_max_date = "31-12-" + str(year)
     df = pd.DataFrame({x: pd.date_range(year_min_date, year_max_date)})
     final_df = df.merge(selected_year_data, how="left")
-    if not blackout:
+    if not dark_theme:
         final_df = final_df.fillna(0)
     return final_df
 
@@ -171,9 +176,10 @@ def calplot(
     data: DataFrame,
     x,
     y,
-    blackout=False,
+    dark_theme=False,
     month_lines_width=1,
-    gap=3,
+    month_lines_color="#9e9e9e",
+    gap=1,
     years_title=False,
     width=800,
     colorscale="greens",
@@ -196,7 +202,9 @@ def calplot(
     )
     for i, year in enumerate(unique_years):
         selected_year_data = data.loc[data[x].dt.year == year]
-        selected_year_data = fill_empty_with_zeros(selected_year_data, x, blackout, year)
+        selected_year_data = fill_empty_with_zeros(
+            selected_year_data, x, dark_theme, year
+        )
 
         year_calplot(
             selected_year_data,
@@ -204,10 +212,11 @@ def calplot(
             y,
             month_lines=month_lines,
             month_lines_width=month_lines_width,
+            month_lines_color=month_lines_color,
             colorscale=colorscale,
             year=year,
             fig=fig,
-            blackout=blackout,
+            dark_theme=dark_theme,
             width=width,
             gap=gap,
             title=title,

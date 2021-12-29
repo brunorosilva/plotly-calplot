@@ -16,3 +16,4 @@ fig = calplot(df, x="date", y="value")
 fig.show()
 # you can also adjust layout and your usual plotly stuff
 ```
+<img src="assets/images/example.png">

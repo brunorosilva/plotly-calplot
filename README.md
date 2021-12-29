@@ -6,14 +6,17 @@ This plot is a very similar to the contribuitions available on Github and Gitlab
 The first mention I could find of this plot being made with plotly was in [this forum post](https://community.plotly.com/t/colored-calendar-heatmap-in-dash/10907/16) and it got my attention as something it should be easily available to anyone.
 
 # Installation
-TODO: upload the package to pypi
+``` bash
+pip install plotly_calplot
+```
 
 # Examples
-```
+``` python
 from plotlycalplot import calplot
 
 fig = calplot(df, x="date", y="value")
 fig.show()
 # you can also adjust layout and your usual plotly stuff
 ```
-<img src="assets/images/example.png">
+
+<img src="https://github.com/brunorosilva/plotly-calplot/blob/main/assets/images/example.png?raw=true">

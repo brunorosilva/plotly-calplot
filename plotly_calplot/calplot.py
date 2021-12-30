@@ -21,6 +21,7 @@ def year_calplot(
     data: DataFrame,
     x,
     y,
+    name,
     year,
     fig,
     row,
@@ -55,9 +56,6 @@ def year_calplot(
         data[x].apply(lambda x: get_weeknumber_of_date(x)).values.tolist()
     )
 
-    # helping plotly out so it doesn't confuses parameter y and column name y
-    value_column_name = str(y)
-
     # the calendar is actually a heatmap :)
     cplt = [
         go.Heatmap(
@@ -70,7 +68,7 @@ def year_calplot(
             colorscale=colorscale,  # user can setup their colorscale
             hovertemplate="%{customdata[0]} <br>%{customdata[1]}=%{z} <br>Week=%{x}",
             customdata=np.stack(
-                (data[x].astype(str), [value_column_name] * data.shape[0]), axis=-1
+                (data[x].astype(str), [name] * data.shape[0]), axis=-1
             ),
             name=str(year),
         )
@@ -176,6 +174,7 @@ def calplot(
     data: DataFrame,
     x,
     y,
+    name="y",
     dark_theme=False,
     month_lines_width=1,
     month_lines_color="#9e9e9e",
@@ -210,6 +209,7 @@ def calplot(
             selected_year_data,
             x,
             y,
+            name=name,
             month_lines=month_lines,
             month_lines_width=month_lines_width,
             month_lines_color=month_lines_color,

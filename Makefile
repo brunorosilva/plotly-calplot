@@ -3,7 +3,7 @@ package := "plotly_calplot"
 st_example:
 	@poetry run streamlit run examples/streamlit_fig.py
 pt_example:
-	@poetry run streamlit run examples/plotly_fig_show.py
+	@poetry run python3 examples/plotly_fig_show.py
 
 lint:
 	black .

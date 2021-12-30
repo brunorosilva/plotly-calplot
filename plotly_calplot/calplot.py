@@ -67,9 +67,7 @@ def year_calplot(
             showscale=False,
             colorscale=colorscale,  # user can setup their colorscale
             hovertemplate="%{customdata[0]} <br>%{customdata[1]}=%{z} <br>Week=%{x}",
-            customdata=np.stack(
-                (data[x].astype(str), [name] * data.shape[0]), axis=-1
-            ),
+            customdata=np.stack((data[x].astype(str), [name] * data.shape[0]), axis=-1),
             name=str(year),
         )
     ]

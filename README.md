@@ -11,6 +11,8 @@ pip install plotly-calplot
 ```
 
 # Examples
+
+In [this Medium article](https://medium.com/@brunorosilva/5fc322125db7) I covered lot's of usage methods for this library.
 ``` python
 from plotly_calplot import calplot
 

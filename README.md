@@ -7,12 +7,12 @@ The first mention I could find of this plot being made with plotly was in [this 
 
 # Installation
 ``` bash
-pip install plotly_calplot
+pip install plotly-calplot
 ```
 
 # Examples
 ``` python
-from plotlycalplot import calplot
+from plotly_calplot import calplot
 
 fig = calplot(df, x="date", y="value")
 fig.show()

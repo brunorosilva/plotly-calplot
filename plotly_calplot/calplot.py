@@ -33,7 +33,7 @@ def year_calplot(
     title,
     dark_theme,
     width,
-    each_plot_height=None,
+    total_height,
 ):
     """
     Each year is subplotted separately and added to the main plot
@@ -152,7 +152,7 @@ def year_calplot(
     fig.update_layout(layout)
     fig.update_xaxes(layout["xaxis"])
     fig.update_yaxes(layout["yaxis"])
-    fig.update_layout(width=width, height=each_plot_height)
+    fig.update_layout(width=width, height=total_height)
     fig.add_traces(cplt, rows=[(row + 1)] * len(cplt), cols=[1] * len(cplt))
 
     return fig
@@ -249,7 +249,7 @@ def calplot(
         subplot_titles = None
 
     if total_height is None:
-        total_height = 500 * unique_years_amount
+        total_height = 150 * unique_years_amount
 
     fig = make_subplots(
         unique_years_amount,
@@ -279,7 +279,7 @@ def calplot(
             gap=gap,
             title=title,
             row=i,
-            each_plot_height=int(total_height / unique_years_amount),
+            total_height=total_height,
         )
 
     return fig

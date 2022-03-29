@@ -9,12 +9,7 @@ def get_weeknumber_of_date(d):
     """
     Pandas week returns some strange values, this function fixes'em
     """
-    if d.month == 1 and d.week > 50:
-        return 0
-    elif d.month == 12 and d.week < 10:
-        return 53
-    else:
-        return d.week
+    return int(d.strftime('%W'))
 
 
 def year_calplot(

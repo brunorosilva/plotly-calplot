@@ -8,7 +8,8 @@ from plotly.subplots import make_subplots
 
 def get_weeknumber_of_date(d):
     """
-    Pandas week returns some strange values, this function fixes'em
+    Pandas week returns ISO week number, this function
+    returns gregorian week date
     """
     return int(d.strftime('%W'))
 

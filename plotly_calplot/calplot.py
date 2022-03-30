@@ -1,3 +1,4 @@
+from datetime import date
 import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
@@ -7,14 +8,10 @@ from plotly.subplots import make_subplots
 
 def get_weeknumber_of_date(d):
     """
-    Pandas week returns some strange values, this function fixes'em
+    Pandas week returns ISO week number, this function
+    returns gregorian week date
     """
-    if d.month == 1 and d.week > 50:
-        return 0
-    elif d.month == 12 and d.week < 10:
-        return 53
-    else:
-        return d.week
+    return int(d.strftime('%W'))
 
 
 def year_calplot(
@@ -159,8 +156,8 @@ def year_calplot(
 
 
 def fill_empty_with_zeros(selected_year_data: DataFrame, x, dark_theme, year: int):
-    year_min_date = "01-01-" + str(year)
-    year_max_date = "31-12-" + str(year)
+    year_min_date = date(year=year, month=1, day=1)
+    year_max_date = date(year=year, month=12, day=31)
     df = pd.DataFrame({x: pd.date_range(year_min_date, year_max_date)})
     final_df = df.merge(selected_year_data, how="left")
     if not dark_theme:

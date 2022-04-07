@@ -1,4 +1,5 @@
 from datetime import date
+
 import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
@@ -6,12 +7,12 @@ from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 
 
-def get_weeknumber_of_date(d):
+def get_weeknumber_of_date(d:pd.Timestamp) -> int:
     """
     Pandas week returns ISO week number, this function
     returns gregorian week date
     """
-    return int(d.strftime('%W'))
+    return int(d.strftime("%W"))
 
 
 def year_calplot(
@@ -181,7 +182,7 @@ def calplot(
     month_lines: bool = True,
     total_height: int = None,
     space_between_plots: float = 0.08,
-):
+) -> go.Figure:
     """
     Yearly Calendar Heatmap
 
@@ -190,7 +191,7 @@ def calplot(
     data : DataFrame
         Must contain at least one date like column and
         one value column for displaying in the plot
-    
+
     x : str
         The name of the date like column in data
 
@@ -234,7 +235,7 @@ def calplot(
         if provided a value, will force the plot to have a specific
         height, otherwise the total height will be calculated
         according to the amount of years in data
-    
+
     space_between_plots: float = 0.08
         controls the vertical space between the plots
     """

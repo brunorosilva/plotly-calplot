@@ -7,7 +7,7 @@ from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 
 
-def get_weeknumber_of_date(d:pd.Timestamp) -> int:
+def get_weeknumber_of_date(d: pd.Timestamp) -> int:
     """
     Pandas week returns ISO week number, this function
     returns gregorian week date
@@ -17,21 +17,21 @@ def get_weeknumber_of_date(d:pd.Timestamp) -> int:
 
 def year_calplot(
     data: DataFrame,
-    x,
-    y,
-    name,
-    year,
-    fig,
-    row,
-    month_lines,
-    month_lines_width,
-    month_lines_color,
-    colorscale,
-    gap,
-    title,
-    dark_theme,
-    width,
-    total_height,
+    x: str,
+    y: str,
+    fig: go.Figure,
+    row: int,
+    year: int,
+    name: str = "y",
+    dark_theme: bool = False,
+    month_lines_width: int = 1,
+    month_lines_color: str = "#9e9e9e",
+    gap: int = 1,
+    width: int = 800,
+    colorscale: str = "greens",
+    title: str = "",
+    month_lines: bool = True,
+    total_height: int = None,
 ):
     """
     Each year is subplotted separately and added to the main plot

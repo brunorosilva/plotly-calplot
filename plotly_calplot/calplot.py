@@ -6,7 +6,7 @@ from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 
 
-def get_weeknumber_of_date(d):
+def _get_weeknumber_of_date(d):
     """
     Pandas week returns ISO week number, this function
     returns gregorian week date
@@ -14,7 +14,43 @@ def get_weeknumber_of_date(d):
     return int(d.strftime('%W'))
 
 
-def year_calplot(
+def _get_subplot_layout(**kwargs) -> go.Layout:
+    """
+    Combines the default subplot layout with the customized parameters
+    """
+    dark_theme = kwargs.pop('dark_theme', False)
+    yaxis = kwargs.pop('yaxis', {})
+    xaxis = kwargs.pop('xaxis', {})
+
+    def _dt(b, a):
+        return a if dark_theme else b
+
+    return go.Layout(**{
+        'yaxis': {
+            'showline': False,
+            'showgrid': False,
+            'zeroline': False,
+            'tickmode': 'array',
+            'autorange': 'reversed',
+            **yaxis,
+        },
+        'xaxis': {
+            'showline': False,
+            'showgrid': False,
+            'zeroline': False,
+            'tickmode': 'array',
+            **xaxis,
+        },
+        'font': {'size': 10, 'color': _dt('#9e9e9e', '#fff')},
+        'plot_bgcolor': _dt('#fff', '#333'),
+        'paper_bgcolor': _dt(None, '#333'),
+        'margin': {'t': 20, 'b': 20},
+        'showlegend': False,
+        **kwargs,
+    })
+
+
+def _year_subplot(
     data: DataFrame,
     x,
     y,
@@ -50,7 +86,7 @@ def year_calplot(
     # https://stackoverflow.com/questions/44372048/python-pandas-timestamp-week-returns-52-for-first-day-of-year
 
     weeknumber_of_dates = (
-        data[x].apply(lambda x: get_weeknumber_of_date(x)).values.tolist()
+        data[x].apply(lambda x: _get_weeknumber_of_date(x)).values.tolist()
     )
 
     # the calendar is actually a heatmap :)
@@ -90,66 +126,24 @@ def year_calplot(
                         ),
                     ]
 
-    #    if row == 0:
-    if dark_theme:
-        layout = go.Layout(
-            title=title,
-            yaxis=dict(
-                showline=False,
-                showgrid=False,
-                zeroline=False,
-                tickmode="array",
-                ticktext=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                tickvals=[0, 1, 2, 3, 4, 5, 6],
-                autorange="reversed",
-            ),
-            xaxis=dict(
-                showline=False,
-                showgrid=False,
-                zeroline=False,
-                tickmode="array",
-                ticktext=month_names,
-                tickvals=month_positions,
-            ),
-            font={"size": 10, "color": "#fff"},
-            paper_bgcolor=("#333"),
-            plot_bgcolor=("#333"),
-            margin=dict(t=20, b=20),
-            showlegend=False,
-        )
-        fig.update_layout(layout)
-        fig.update_xaxes(layout["xaxis"])
-        fig.update_yaxes(layout["yaxis"])
+    layout = _get_subplot_layout(
+        dark_theme=dark_theme,
+        title=title,
+        yaxis=dict(
+            ticktext=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            tickvals=[0, 1, 2, 3, 4, 5, 6],
+        ),
+        xaxis=dict(
+            ticktext=month_names,
+            tickvals=month_positions,
+        ),
+        width=width,
+        height=total_height
+    )
 
-    else:
-        layout = go.Layout(
-            title=title,
-            yaxis=dict(
-                showline=False,
-                showgrid=False,
-                zeroline=False,
-                tickmode="array",
-                ticktext=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                tickvals=[0, 1, 2, 3, 4, 5, 6],
-                autorange="reversed",
-            ),
-            xaxis=dict(
-                showline=False,
-                showgrid=False,
-                zeroline=False,
-                tickmode="array",
-                ticktext=month_names,
-                tickvals=month_positions,
-            ),
-            font={"size": 10, "color": "#9e9e9e"},
-            plot_bgcolor=("#fff"),
-            margin=dict(t=20, b=20),
-            showlegend=False,
-        )
     fig.update_layout(layout)
     fig.update_xaxes(layout["xaxis"])
     fig.update_yaxes(layout["yaxis"])
-    fig.update_layout(width=width, height=total_height)
     fig.add_traces(cplt, rows=[(row + 1)] * len(cplt), cols=[1] * len(cplt))
 
     return fig
@@ -260,7 +254,7 @@ def calplot(
             selected_year_data, x, dark_theme, year
         )
 
-        year_calplot(
+        _year_subplot(
             selected_year_data,
             x,
             y,
@@ -278,5 +272,95 @@ def calplot(
             row=i,
             total_height=total_height,
         )
+
+    return fig
+
+def month_calplot(
+    data: DataFrame,
+    x: str,
+    y: str,
+    name: str = "y",
+    dark_theme: bool = False,
+    gap: int = 2,
+    width: int = 400,
+    colorscale: str = "greens",
+    title: str = "",
+    total_height: int = None,
+    showscale: bool = False,
+):
+    """
+    Yearly Calendar Heatmap by months (12 cols per row)
+
+    Parameters
+    ----------
+    data : DataFrame
+        Must contain at least one date like column and
+        one value column for displaying in the plot
+
+    x : str
+        The name of the date like column in data
+
+    y : str
+        The name of the value column in data
+
+    dark_theme : bool = False
+        Option for creating a dark themed plot
+
+    gap : int = 2
+        controls the gap bewteen monthly squares
+
+    width : int = 400
+        controls the width of the plot
+
+    colorscale : str = "greens"
+        controls the colorscale for the calendar, works
+        with all the standard Plotly Colorscales and also
+        supports custom colorscales made by the user
+
+    title : str = ""
+        title of the plot
+
+    total_height : int = None
+        if provided a value, will force the plot to have a specific
+        height, otherwise the total height will be calculated
+        according to the amount of years in data
+
+    showscale : bool = False
+        wether to show the scale of the data
+    """
+    gData = data.set_index(x)[y].groupby(pd.Grouper(freq='M')).sum()
+    unique_years = gData.index.year.unique()
+    unique_years_amount = len(unique_years)
+
+    if total_height is None:
+        total_height = 30 * unique_years_amount
+
+    layout = _get_subplot_layout(
+        dark_theme=dark_theme,
+        width=width,
+        height=total_height,
+        title=title,
+        yaxis={
+            'tickvals': unique_years,
+        },
+        xaxis={
+            'tickvals': list(range(12))
+        },
+    )
+
+    cplt = go.Heatmap(
+        x=gData.index.month,
+        y=gData.index.year,
+        z=gData,
+        name=title,
+        showscale=showscale,
+        xgap=gap,
+        ygap=gap,
+        colorscale=colorscale,
+        customdata=np.stack((gData.index.astype(str), [name] * gData.shape[0]), axis=-1),
+        hovertemplate="%{customdata[0]} <br>%{customdata[1]}=%{z} <br>Month=%{x}",
+    )
+
+    fig = go.Figure(data=cplt, layout=layout)
 
     return fig

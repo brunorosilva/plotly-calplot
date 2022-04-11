@@ -1,1 +1,3 @@
-from .calplot import calplot
+from .calplot import calplot  # noqa: F401
+
+__version__ = "0.0.2"

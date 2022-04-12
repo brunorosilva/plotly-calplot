@@ -17,11 +17,11 @@ jobs:
       with:
         fetch-depth: 1
 
-    - name: Set up Python 3.7
+    - name: Set up Python 3.8
       uses: actions/setup-python@v1
       with:
-        python-version: 3.7
-
+        python-version: 3.8
+  
     - name: Install Poetry
       uses: dschep/install-poetry-action@v1.2
 
@@ -33,15 +33,28 @@ jobs:
         key: poetry-$
         restore-keys: |
           poetry-$
-            
+
+  install:
+    runs-on: ubuntu-latest
+    steps:       
     - name: Install dependencies
       run: poetry install
       
+
+  linting:
+    runs-on: ubuntu-latest
+    steps:
     - name: Run formatter
       run: make lint
-      
+
+  checks:
+    runs-on: ubuntu-latest
+    steps:
     - name: Run checks
       run: make checks
 
+  deploy_to_pypi:
+    runs-on: ubuntu-latest
+    steps:
     - name: pypi deploy
       run: make pypi_deploy

@@ -1,0 +1,45 @@
+name: Plotly Calplot CI
+env:
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+  
+    - name: Install Poetry
+      uses: dschep/install-poetry-action@v1.2
+
+    - name: Cache Poetry virtualenv
+      uses: actions/cache@v1
+      id: cache
+      with:
+        path: ~/.virtualenvs
+        key: poetry-$
+        restore-keys: |
+          poetry-$
+
+    - name: Install dependencies
+      run: poetry install
+      
+    - name: Run formatter
+      run: make lint
+
+    - name: Run checks
+      run: make checks
+

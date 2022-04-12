@@ -43,5 +43,3 @@ jobs:
     - name: Run checks
       run: make checks
 
-    - name: pypi deploy
-      run: make pypi_deploy

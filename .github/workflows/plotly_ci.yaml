@@ -3,9 +3,9 @@ env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 on:
   push:
-    branches: [ add-tests ]
+    branches: [ main ]
   pull_request:
-    branches: [ add-tests ]
+    branches: [ main ]
 
 jobs:
   build:

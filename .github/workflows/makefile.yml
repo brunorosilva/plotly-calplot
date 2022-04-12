@@ -13,20 +13,32 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Initialize Python 3.7
+        with:
+          fetch-depth: 1
+
+    - name: Set up Python 3.7
       uses: actions/setup-python@v1
-      with: 
+      with:
         python-version: 3.7
-      
+
+    - name: Install Poetry
+      uses: dschep/install-poetry-action@v1.2
+
+    - name: Cache Poetry virtualenv
+      uses: actions/cache@v1
+      id: cache
+      with:
+        path: ~/.virtualenvs
+        key: poetry-$
+        restore-keys: |
+          poetry-$
+            
     - name: Install dependencies
-      run: make install
+      run: poetry install
       
     - name: Run formatter
       run: make lint
       
-    - name: Run checks
-      run: make checks
-
     - name: Run checks
       run: make checks
 

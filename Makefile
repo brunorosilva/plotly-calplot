@@ -19,4 +19,8 @@ checks:
 	@poetry run mypy plotly_calplot
 	@poetry run mypy ./tests/**.py
 	@poetry run pytest tests/
-	@poetry run poetry check	
+	@poetry run poetry check
+
+pypi_deploy:
+	@poetry build
+	@poetry publish

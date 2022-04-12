@@ -1,0 +1,33 @@
+name: Plotly Calplot CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: configure
+      run: ./configure
+      
+    - name: Install dependencies
+      run: make install
+      
+    - name: Run formatter
+      run: make lint
+      
+    - name: Run checks
+      run: make checks
+
+    - name: Run checks
+      run: make checks
+
+    - name: pypi deploy
+      run: make pypi_deploy

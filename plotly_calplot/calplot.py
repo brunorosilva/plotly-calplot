@@ -361,9 +361,14 @@ def month_calplot(
             'tickvals': unique_years,
         },
         xaxis={
-            'tickvals': list(range(12))
+            'tickvals': list(range(1, 13)),
+            'ticktext': [date(1900, i, 1).strftime('%b') for i in range(1, 13)],
+            'tickangle': 45
         },
     )
+
+    # hovertext = _gen_hoverText(gData.index.month, gData.index.year, gData)
+    hovertext = gData.apply(lambda x: f'{x:.0f}')
 
     cplt = go.Heatmap(
         x=gData.index.month,
@@ -374,8 +379,8 @@ def month_calplot(
         xgap=gap,
         ygap=gap,
         colorscale=colorscale,
-        customdata=np.stack((gData.index.astype(str), [name] * gData.shape[0]), axis=-1),
-        hovertemplate="%{customdata[0]} <br>%{customdata[1]}=%{z} <br>Month=%{x}",
+        hoverinfo='text',
+        text=hovertext
     )
 
     fig = go.Figure(data=cplt, layout=layout)

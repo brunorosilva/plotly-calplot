@@ -276,9 +276,9 @@ def calplot(
     return fig
 
 def month_calplot(
-    data: DataFrame,
-    x: str,
-    y: str,
+    data: DataFrame = None,
+    x: str = "x",
+    y: str = "y",
     name: str = "y",
     dark_theme: bool = False,
     gap: int = 2,
@@ -294,15 +294,16 @@ def month_calplot(
 
     Parameters
     ----------
-    data : DataFrame
+    data : DataFrame | None
         Must contain at least one date like column and
-        one value column for displaying in the plot
+        one value column for displaying in the plot. If data is None, x and y will
+        be used
 
-    x : str
-        The name of the date like column in data
+    x : str | Iterable
+        The name of the date like column in data or the column if data is None
 
-    y : str
-        The name of the value column in data
+    y : str | Iterable
+        The name of the value column in data or the column if data is None
 
     dark_theme : bool = False
         Option for creating a dark themed plot
@@ -332,6 +333,18 @@ def month_calplot(
     showscale : bool = False
         wether to show the scale of the data
     """
+    if data is None:
+        if not isinstance(x, pd.Series):
+            x = pd.Series(x, dtype='datetime64[ns]', name='x')
+
+        if not isinstance(y, pd.Series):
+            y = pd.Series(y, dtype='float64', name='y')
+
+        data = pd.DataFrame({x.name: x, y.name: y})
+
+        x = x.name
+        y = y.name
+
     gData = data.set_index(x)[y].groupby(pd.Grouper(freq='M')).sum()
     unique_years = gData.index.year.unique()
     unique_years_amount = len(unique_years)

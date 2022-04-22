@@ -285,6 +285,7 @@ def month_calplot(
     width: int = 400,
     colorscale: str = "greens",
     title: str = "",
+    year_height: int = 30,
     total_height: int = None,
     showscale: bool = False,
 ):
@@ -320,6 +321,9 @@ def month_calplot(
     title : str = ""
         title of the plot
 
+    year_height: int = 30
+        the height per year to be used if total_height is None
+
     total_height : int = None
         if provided a value, will force the plot to have a specific
         height, otherwise the total height will be calculated
@@ -333,7 +337,7 @@ def month_calplot(
     unique_years_amount = len(unique_years)
 
     if total_height is None:
-        total_height = 30 * unique_years_amount
+        total_height = 20+max(10, year_height * unique_years_amount)
 
     layout = _get_subplot_layout(
         dark_theme=dark_theme,

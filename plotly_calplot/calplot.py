@@ -2,6 +2,10 @@ from pandas.core.frame import DataFrame
 from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 
+from plotly_calplot.layout_formatter import (
+    apply_general_colorscaling,
+    showscale_of_heatmaps,
+)
 from plotly_calplot.single_year_calplot import year_calplot
 from plotly_calplot.utils import fill_empty_with_zeros
 
@@ -22,6 +26,7 @@ def calplot(
     month_lines: bool = True,
     total_height: int = None,
     space_between_plots: float = 0.08,
+    showscale: bool = False,
 ) -> go.Figure:
     """
     Yearly Calendar Heatmap
@@ -78,6 +83,10 @@ def calplot(
 
     space_between_plots: float = 0.08
         controls the vertical space between the plots
+
+    showscale: bool = False
+        if True, a color legend will be created.
+        Thanks to @ghhar98!
     """
     unique_years = data[x].dt.year.unique()
     unique_years_amount = len(unique_years)
@@ -119,5 +128,9 @@ def calplot(
             row=i,
             total_height=total_height,
         )
+
+    fig = apply_general_colorscaling(data, y, fig)
+    if showscale:
+        fig = showscale_of_heatmaps(fig)
 
     return fig

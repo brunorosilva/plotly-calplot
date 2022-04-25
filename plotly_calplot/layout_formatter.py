@@ -105,3 +105,14 @@ def update_plot_with_current_layout(
     fig.update_layout(width=width, height=total_height)
     fig.add_traces(cplt, rows=[(row + 1)] * len(cplt), cols=[1] * len(cplt))
     return fig
+
+
+def apply_general_colorscaling(data: pd.DataFrame, y: str, fig: go.Figure) -> go.Figure:
+    return fig.update_traces(selector=dict(type="heatmap"), zmax=data[y].max(), zmin=0)
+
+
+def showscale_of_heatmaps(fig: go.Figure) -> go.Figure:
+    return fig.update_traces(
+        showscale=True,
+        selector=dict(type="heatmap"),
+    )

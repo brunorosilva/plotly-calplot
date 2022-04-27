@@ -17,12 +17,7 @@ dummy_df = pd.DataFrame(
         ),
     }
 )
-fig1 = calplot(
-    dummy_df,
-    x="ds",
-    y="value",
-    dark_theme=True
-)
+fig1 = calplot(dummy_df, x="ds", y="value", dark_theme=True)
 
 fig1.show()
 

@@ -1,162 +1,54 @@
 from datetime import date
-import numpy as np
-import pandas as pd
-from pandas.core.frame import DataFrame
+from typing import Dict, Any
+
+from pandas import DataFrame, Series, Grouper
 from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 
+from plotly_calplot.layout_formatter import (
+    apply_general_colorscaling,
+    showscale_of_heatmaps,
+)
+from plotly_calplot.single_year_calplot import year_calplot
+from plotly_calplot.utils import fill_empty_with_zeros
 
-def _get_weeknumber_of_date(d):
-    """
-    Pandas week returns ISO week number, this function
-    returns gregorian week date
-    """
-    return int(d.strftime('%W'))
 
-
-def _get_subplot_layout(**kwargs) -> go.Layout:
+def _get_subplot_layout(**kwargs: Any) -> go.Layout:
     """
     Combines the default subplot layout with the customized parameters
     """
-    dark_theme = kwargs.pop('dark_theme', False)
-    yaxis = kwargs.pop('yaxis', {})
-    xaxis = kwargs.pop('xaxis', {})
+    dark_theme: bool = kwargs.pop("dark_theme", False)
+    yaxis: Dict[str, Any] = kwargs.pop("yaxis", {})
+    xaxis: Dict[str, Any] = kwargs.pop("xaxis", {})
 
-    def _dt(b, a):
+    def _dt(b: Any, a: Any) -> Any:
         return a if dark_theme else b
 
-    return go.Layout(**{
-        'yaxis': {
-            'showline': False,
-            'showgrid': False,
-            'zeroline': False,
-            'tickmode': 'array',
-            'autorange': 'reversed',
-            **yaxis,
-        },
-        'xaxis': {
-            'showline': False,
-            'showgrid': False,
-            'zeroline': False,
-            'tickmode': 'array',
-            **xaxis,
-        },
-        'font': {'size': 10, 'color': _dt('#9e9e9e', '#fff')},
-        'plot_bgcolor': _dt('#fff', '#333'),
-        'paper_bgcolor': _dt(None, '#333'),
-        'margin': {'t': 20, 'b': 20},
-        'showlegend': False,
-        **kwargs,
-    })
-
-
-def _year_subplot(
-    data: DataFrame,
-    x,
-    y,
-    name,
-    year,
-    fig,
-    row,
-    month_lines,
-    month_lines_width,
-    month_lines_color,
-    colorscale,
-    gap,
-    title,
-    dark_theme,
-    width,
-    total_height,
-):
-    """
-    Each year is subplotted separately and added to the main plot
-    """
-    month_names = list(data[x].dt.month_name().unique())
-    month_days = []
-    for month in data[x].dt.month.unique():
-        month_days.append(data.loc[data[x].dt.month == month].max()[x].day)
-
-    month_positions = (np.cumsum(month_days) - 15) / 7
-
-    weekdays_in_year = [i.weekday() for i in data[x]]
-
-    # sometimes the last week of the current year conflicts with next year's january
-    # pandas will give those weeks the number 52 or 53, but this is bad news for this plot
-    # therefore we need a correction, for a more in-depth explanation check
-    # https://stackoverflow.com/questions/44372048/python-pandas-timestamp-week-returns-52-for-first-day-of-year
-
-    weeknumber_of_dates = (
-        data[x].apply(lambda x: _get_weeknumber_of_date(x)).values.tolist()
+    return go.Layout(
+        **{
+            "yaxis": {
+                "showline": False,
+                "showgrid": False,
+                "zeroline": False,
+                "tickmode": "array",
+                "autorange": "reversed",
+                **yaxis,
+            },
+            "xaxis": {
+                "showline": False,
+                "showgrid": False,
+                "zeroline": False,
+                "tickmode": "array",
+                **xaxis,
+            },
+            "font": {"size": 10, "color": _dt("#9e9e9e", "#fff")},
+            "plot_bgcolor": _dt("#fff", "#333"),
+            "paper_bgcolor": _dt(None, "#333"),
+            "margin": {"t": 20, "b": 20},
+            "showlegend": False,
+            **kwargs,
+        }
     )
-
-    # the calendar is actually a heatmap :)
-    cplt = [
-        go.Heatmap(
-            x=weeknumber_of_dates,
-            y=weekdays_in_year,
-            z=data[y],
-            xgap=gap,  # this
-            ygap=gap,  # and this is used to make the grid-like apperance
-            showscale=False,
-            colorscale=colorscale,  # user can setup their colorscale
-            hovertemplate="%{customdata[0]} <br>%{customdata[1]}=%{z} <br>Week=%{x}",
-            customdata=np.stack((data[x].astype(str), [name] * data.shape[0]), axis=-1),
-            name=str(year),
-        )
-    ]
-
-    if month_lines:
-        kwargs = dict(
-            mode="lines",
-            line=dict(color=month_lines_color, width=month_lines_width),
-            hoverinfo="skip",
-        )
-        for date, dow, wkn in zip(data[x], weekdays_in_year, weeknumber_of_dates):
-            if date.day == 1:
-                cplt += [
-                    go.Scatter(x=[wkn - 0.5, wkn - 0.5], y=[dow - 0.5, 6.5], **kwargs)
-                ]
-                if dow:
-                    cplt += [
-                        go.Scatter(
-                            x=[wkn - 0.5, wkn + 0.5], y=[dow - 0.5, dow - 0.5], **kwargs
-                        ),
-                        go.Scatter(
-                            x=[wkn + 0.5, wkn + 0.5], y=[dow - 0.5, -0.5], **kwargs
-                        ),
-                    ]
-
-    layout = _get_subplot_layout(
-        dark_theme=dark_theme,
-        title=title,
-        yaxis=dict(
-            ticktext=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-            tickvals=[0, 1, 2, 3, 4, 5, 6],
-        ),
-        xaxis=dict(
-            ticktext=month_names,
-            tickvals=month_positions,
-        ),
-        width=width,
-        height=total_height
-    )
-
-    fig.update_layout(layout)
-    fig.update_xaxes(layout["xaxis"])
-    fig.update_yaxes(layout["yaxis"])
-    fig.add_traces(cplt, rows=[(row + 1)] * len(cplt), cols=[1] * len(cplt))
-
-    return fig
-
-
-def fill_empty_with_zeros(selected_year_data: DataFrame, x, dark_theme, year: int):
-    year_min_date = date(year=year, month=1, day=1)
-    year_max_date = date(year=year, month=12, day=31)
-    df = pd.DataFrame({x: pd.date_range(year_min_date, year_max_date)})
-    final_df = df.merge(selected_year_data, how="left")
-    if not dark_theme:
-        final_df = final_df.fillna(0)
-    return final_df
 
 
 def calplot(
@@ -175,7 +67,8 @@ def calplot(
     month_lines: bool = True,
     total_height: int = None,
     space_between_plots: float = 0.08,
-):
+    showscale: bool = False,
+) -> go.Figure:
     """
     Yearly Calendar Heatmap
 
@@ -184,7 +77,7 @@ def calplot(
     data : DataFrame
         Must contain at least one date like column and
         one value column for displaying in the plot
-    
+
     x : str
         The name of the date like column in data
 
@@ -228,9 +121,13 @@ def calplot(
         if provided a value, will force the plot to have a specific
         height, otherwise the total height will be calculated
         according to the amount of years in data
-    
+
     space_between_plots: float = 0.08
         controls the vertical space between the plots
+
+    showscale: bool = False
+        if True, a color legend will be created.
+        Thanks to @ghhar98!
     """
     unique_years = data[x].dt.year.unique()
     unique_years_amount = len(unique_years)
@@ -254,7 +151,7 @@ def calplot(
             selected_year_data, x, dark_theme, year
         )
 
-        _year_subplot(
+        year_calplot(
             selected_year_data,
             x,
             y,
@@ -273,7 +170,12 @@ def calplot(
             total_height=total_height,
         )
 
+    fig = apply_general_colorscaling(data, y, fig)
+    if showscale:
+        fig = showscale_of_heatmaps(fig)
+
     return fig
+
 
 def month_calplot(
     data: DataFrame = None,
@@ -288,7 +190,7 @@ def month_calplot(
     year_height: int = 30,
     total_height: int = None,
     showscale: bool = False,
-):
+) -> go.Figure:
     """
     Yearly Calendar Heatmap by months (12 cols per row)
 
@@ -334,23 +236,23 @@ def month_calplot(
         wether to show the scale of the data
     """
     if data is None:
-        if not isinstance(x, pd.Series):
-            x = pd.Series(x, dtype='datetime64[ns]', name='x')
+        if not isinstance(x, Series):
+            x = Series(x, dtype="datetime64[ns]", name="x")
 
-        if not isinstance(y, pd.Series):
-            y = pd.Series(y, dtype='float64', name='y')
+        if not isinstance(y, Series):
+            y = Series(y, dtype="float64", name="y")
 
-        data = pd.DataFrame({x.name: x, y.name: y})
+        data = DataFrame({x.name: x, y.name: y})
 
         x = x.name
         y = y.name
 
-    gData = data.set_index(x)[y].groupby(pd.Grouper(freq='M')).sum()
+    gData = data.set_index(x)[y].groupby(Grouper(freq="M")).sum()
     unique_years = gData.index.year.unique()
     unique_years_amount = len(unique_years)
 
     if total_height is None:
-        total_height = 20+max(10, year_height * unique_years_amount)
+        total_height = 20 + max(10, year_height * unique_years_amount)
 
     layout = _get_subplot_layout(
         dark_theme=dark_theme,
@@ -358,17 +260,17 @@ def month_calplot(
         height=total_height,
         title=title,
         yaxis={
-            'tickvals': unique_years,
+            "tickvals": unique_years,
         },
         xaxis={
-            'tickvals': list(range(1, 13)),
-            'ticktext': [date(1900, i, 1).strftime('%b') for i in range(1, 13)],
-            'tickangle': 45
+            "tickvals": list(range(1, 13)),
+            "ticktext": [date(1900, i, 1).strftime("%b") for i in range(1, 13)],
+            "tickangle": 45,
         },
     )
 
     # hovertext = _gen_hoverText(gData.index.month, gData.index.year, gData)
-    hovertext = gData.apply(lambda x: f'{x:.0f}')
+    hovertext = gData.apply(lambda x: f"{x:.0f}")
 
     cplt = go.Heatmap(
         x=gData.index.month,
@@ -379,8 +281,8 @@ def month_calplot(
         xgap=gap,
         ygap=gap,
         colorscale=colorscale,
-        hoverinfo='text',
-        text=hovertext
+        hoverinfo="text",
+        text=hovertext,
     )
 
     fig = go.Figure(data=cplt, layout=layout)

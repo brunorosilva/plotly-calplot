@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "plotly_calplot"
-version = "0.1.7"
+version = "0.1.9"
 description = "Calendar Plot made with Plotly"
 authors = ["Bruno Rodrigues Silva <b.rosilva1@gmail.com>"]
 license = "MIT"
@@ -8,9 +8,16 @@ repository = "https://github.com/brunorosilva/plotly-calplot"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.7.1"
+python = ">=3.8,<4.0.0"
 plotly = "^5.4.0"
 pandas = "^1.0.5"
+isort = "^5.10.1"
+flake8 = "^4.0.1"
+vulture = "^2.3"
+mypy = "^0.942"
+numpy = "^1.22.3"
+pytest = "^7.1.1"
+pytest-cov = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"

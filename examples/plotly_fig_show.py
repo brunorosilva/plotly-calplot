@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from plotly_calplot.calplot import calplot
+from plotly_calplot.calplot import calplot, month_calplot
 
 # mock setup
 dummy_start_date = "2019-01-01"
@@ -17,10 +17,16 @@ dummy_df = pd.DataFrame(
         ),
     }
 )
-fig = calplot(
+fig1 = calplot(dummy_df, x="ds", y="value", dark_theme=True)
+
+fig1.show()
+
+# same example by month
+fig2 = month_calplot(
     dummy_df,
     x="ds",
     y="value",
+    dark_theme=True,
+    showscale=True,
 )
-
-fig.show()
+fig2.show()

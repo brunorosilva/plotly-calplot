@@ -69,7 +69,7 @@ jobs:
           poetry-$
 
     - name: Create dists
-      run: run poetry build
+      run: poetry build
     
     - name: Publish distribution 📦 to Test PyPI
       uses: pypa/gh-action-pypi-publish@master

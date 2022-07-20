@@ -8,7 +8,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  checks:
 
     runs-on: ubuntu-latest
 
@@ -43,3 +43,42 @@ jobs:
     - name: Run checks
       run: make checks
 
+  publish-to-testpypi:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+  
+    - name: Install Poetry
+      uses: dschep/install-poetry-action@v1.2
+
+    - name: Cache Poetry virtualenv
+      uses: actions/cache@v1
+      id: cache
+      with:
+        path: ~/.virtualenvs
+        key: poetry-$
+        restore-keys: |
+          poetry-$
+
+    - name: Create dists
+      run: run poetry build
+    
+    - name: Publish distribution 📦 to Test PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.PLOTLY_DEV_TOKEN }}
+        repository_url: https://test.pypi.org/legacy/
+        skip_existing: true
+    - name: Publish distribution 📦 to PyPI
+      if: startsWith(github.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.PLOTLY_PRD_TOKEN }}

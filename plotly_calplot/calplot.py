@@ -1,7 +1,7 @@
 from datetime import date
-from typing import Dict, Any
+from typing import Any, Dict
 
-from pandas import DataFrame, Series, Grouper
+from pandas import DataFrame, Grouper, Series
 from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -61,7 +61,6 @@ def calplot(
     month_lines_color: str = "#9e9e9e",
     gap: int = 1,
     years_title: bool = False,
-    width: int = 800,
     colorscale: str = "greens",
     title: str = "",
     month_lines: bool = True,
@@ -105,9 +104,6 @@ def calplot(
     years_title : bool = False
         if true will add a title for each subplot with the
         correspondent year
-
-    width : int = 800
-        controls the width of the plot
 
     colorscale : str = "greens"
         controls the colorscale for the calendar, works
@@ -163,7 +159,6 @@ def calplot(
             year=year,
             fig=fig,
             dark_theme=dark_theme,
-            width=width,
             gap=gap,
             title=title,
             row=i,
@@ -184,7 +179,6 @@ def month_calplot(
     name: str = "y",
     dark_theme: bool = False,
     gap: int = 2,
-    width: int = 400,
     colorscale: str = "greens",
     title: str = "",
     year_height: int = 30,
@@ -212,9 +206,6 @@ def month_calplot(
 
     gap : int = 2
         controls the gap bewteen monthly squares
-
-    width : int = 400
-        controls the width of the plot
 
     colorscale : str = "greens"
         controls the colorscale for the calendar, works
@@ -256,7 +247,6 @@ def month_calplot(
 
     layout = _get_subplot_layout(
         dark_theme=dark_theme,
-        width=width,
         height=total_height,
         title=title,
         yaxis={

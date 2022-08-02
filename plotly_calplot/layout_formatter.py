@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List, Optional
 
 import pandas as pd
 from plotly import graph_objects as go
@@ -96,13 +96,12 @@ def update_plot_with_current_layout(
     cplt: go.Figure,
     row: int,
     layout: go.Layout,
-    width: Any,
-    total_height: Any,
+    total_height: Optional[int],
 ) -> go.Figure:
     fig.update_layout(layout)
     fig.update_xaxes(layout["xaxis"])
     fig.update_yaxes(layout["yaxis"])
-    fig.update_layout(width=width, height=total_height)
+    fig.update_layout(height=total_height)
     fig.add_traces(cplt, rows=[(row + 1)] * len(cplt), cols=[1] * len(cplt))
     return fig
 

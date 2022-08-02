@@ -87,7 +87,7 @@ class TestLayouting(TestCase):
                 },
             }
         )
-        result = update_plot_with_current_layout(go.Figure(), [], 0, layout, 10, 100)
+        result = update_plot_with_current_layout(go.Figure(), [], 0, layout, 100)
         # .set_trace()
         self.assertEqual(result.layout.font, layout.font)
         self.assertEqual(result.layout.margin, layout.margin)

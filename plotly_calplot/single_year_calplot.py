@@ -22,7 +22,6 @@ def year_calplot(
     month_lines_width: int = 1,
     month_lines_color: str = "#9e9e9e",
     gap: int = 1,
-    width: int = 800,
     colorscale: str = "greens",
     title: str = "",
     month_lines: bool = True,
@@ -53,6 +52,6 @@ def year_calplot(
         )
 
     layout = decide_layout(dark_theme, title, month_names, month_positions)
-    fig = update_plot_with_current_layout(fig, cplt, row, layout, width, total_height)
+    fig = update_plot_with_current_layout(fig, cplt, row, layout, total_height)
 
     return fig

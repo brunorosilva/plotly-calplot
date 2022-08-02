@@ -22,5 +22,12 @@ checks:
 	@poetry run poetry check
 
 pypi_deploy:
+	@poetry config pypi-token.pypi $(PLOTLY_PRD_TOKEN)
 	@poetry build
 	@poetry publish
+
+testpypi_deploy:
+	@poetry config repositories.test-pypi https://test.pypi.org/legacy/
+	@poetry config pypi-token.test-pypi $(PLOTLY_DEV_TOKEN)
+	@poetry build
+	@poetry publish -r test-pypi

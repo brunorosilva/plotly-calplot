@@ -1,15 +1,12 @@
-name: Plotly Calplot CI
+name: Upload Calplot to Pypi
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  release:
+    types: [ created ]
 
 jobs:
-  checks:
-
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,11 +31,17 @@ jobs:
         restore-keys: |
           poetry-$
 
-    - name: Install dependencies
-      run: poetry install
-      
-    - name: Run formatter
-      run: make lint
-
-    - name: Run checks
-      run: make checks
+    - name: Create dists
+      run: poetry build
+    
+    - name: Publish distribution 📦 to Test PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.PLOTLY_DEV_TOKEN }}
+        repository_url: https://test.pypi.org/legacy/
+        skip_existing: true
+        
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.PLOTLY_PRD_TOKEN }}

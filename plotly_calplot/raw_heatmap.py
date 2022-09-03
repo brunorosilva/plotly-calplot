@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
@@ -15,7 +15,15 @@ def create_heatmap_without_formatting(
     year: int,
     colorscale: str,
     name: str,
+    text: Optional[List[str]] = None,
+    text_name: Optional[str] = None,
 ) -> List[go.Figure]:
+    hovertemplate_extra = ""
+    if text is not None:
+        hovertemplate_extra = " <br>"
+        if text_name is not None:
+            hovertemplate_extra += f"{text_name}="
+        hovertemplate_extra += "%{text}"
     raw_heatmap = [
         go.Heatmap(
             x=weeknumber_of_dates,
@@ -25,7 +33,11 @@ def create_heatmap_without_formatting(
             ygap=gap,  # and this is used to make the grid-like apperance
             showscale=False,
             colorscale=colorscale,  # user can setup their colorscale
-            hovertemplate="%{customdata[0]} <br>%{customdata[1]}=%{z} <br>Week=%{x}",
+            text=text,
+            hovertemplate=(
+                "%{customdata[0]} <br>%{customdata[1]}=%{z} <br>Week=%{x}"
+                + hovertemplate_extra
+            ),
             customdata=np.stack((data[x].astype(str), [name] * data.shape[0]), axis=-1),
             name=str(year),
         )

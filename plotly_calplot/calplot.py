@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from pandas import DataFrame, Grouper, Series
 from plotly import graph_objects as go
@@ -67,6 +67,7 @@ def calplot(
     total_height: int = None,
     space_between_plots: float = 0.08,
     showscale: bool = False,
+    text: Optional[str] = None,
 ) -> go.Figure:
     """
     Yearly Calendar Heatmap
@@ -124,6 +125,9 @@ def calplot(
     showscale: bool = False
         if True, a color legend will be created.
         Thanks to @ghhar98!
+
+    text: Optional[str] = None
+        The name of the column in data to include in hovertext.
     """
     unique_years = data[x].dt.year.unique()
     unique_years_amount = len(unique_years)
@@ -163,6 +167,8 @@ def calplot(
             title=title,
             row=i,
             total_height=total_height,
+            text=None if text is None else selected_year_data[text].tolist(),
+            text_name=text,
         )
 
     fig = apply_general_colorscaling(data, y, fig)

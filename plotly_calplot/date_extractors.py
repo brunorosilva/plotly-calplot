@@ -19,20 +19,10 @@ def get_date_coordinates(
     weekdays_in_year = [i.weekday() for i in data[x]]
 
     # sometimes the last week of the current year conflicts with next year's january
-    # pandas will give those weeks the number 52 or 53, but this is bad news for this plot
-    # therefore we need a correction, for a more in-depth explanation check
+    # pandas uses ISO weeks, which will give those weeks the number 52 or 53, but this
+    # is bad news for this plot therefore we need a correction to use Gregorian weeks,
+    # for a more in-depth explanation check
     # https://stackoverflow.com/questions/44372048/python-pandas-timestamp-week-returns-52-for-first-day-of-year
-
-    weeknumber_of_dates = (
-        data[x].apply(lambda x: get_weeknumber_of_date(x)).values.tolist()
-    )
+    weeknumber_of_dates = data[x].dt.strftime("%W").astype(int).tolist()
 
     return month_positions, weekdays_in_year, weeknumber_of_dates
-
-
-def get_weeknumber_of_date(d: pd.Timestamp) -> int:
-    """
-    Pandas week returns ISO week number, this function
-    returns gregorian week date
-    """
-    return int(d.strftime("%W"))

@@ -35,7 +35,7 @@ def create_heatmap_without_formatting(
             colorscale=colorscale,  # user can setup their colorscale
             text=text,
             hovertemplate=(
-                "%{customdata[0]} <br>%{customdata[1]}=%{z} <br>Week=%{x}"
+                "%{customdata[0]} <br>Week=%{x} <br>%{customdata[1]}=%{z}"
                 + hovertemplate_extra
             ),
             customdata=np.stack((data[x].astype(str), [name] * data.shape[0]), axis=-1),

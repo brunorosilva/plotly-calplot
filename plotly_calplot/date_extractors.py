@@ -13,7 +13,7 @@ def get_date_coordinates(
 ) -> Tuple[Any, List[float], List[int]]:
     month_days = []
     for m in data[x].dt.month.unique():
-        month_days.append(data.loc[data[x].dt.month == m].max()[x].day)
+        month_days.append(data.loc[data[x].dt.month == m, x].max().day)
 
     month_positions = (np.cumsum(month_days) - 15) / 7
     weekdays_in_year = [i.weekday() for i in data[x]]

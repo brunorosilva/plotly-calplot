@@ -1,3 +1,5 @@
+from typing import List, Optional
+
 from pandas.core.frame import DataFrame
 from plotly import graph_objects as go
 
@@ -26,6 +28,8 @@ def year_calplot(
     title: str = "",
     month_lines: bool = True,
     total_height: int = None,
+    text: Optional[List[str]] = None,
+    text_name: Optional[str] = None,
 ) -> go.Figure:
     """
     Each year is subplotted separately and added to the main plot
@@ -38,7 +42,17 @@ def year_calplot(
 
     # the calendar is actually a heatmap :)
     cplt = create_heatmap_without_formatting(
-        data, x, y, weeknumber_of_dates, weekdays_in_year, gap, year, colorscale, name
+        data,
+        x,
+        y,
+        weeknumber_of_dates,
+        weekdays_in_year,
+        gap,
+        year,
+        colorscale,
+        name,
+        text=text,
+        text_name=text_name,
     )
 
     if month_lines:

@@ -4,11 +4,7 @@ from unittest import TestCase
 import numpy as np
 import pandas as pd
 
-from plotly_calplot.date_extractors import (
-    get_date_coordinates,
-    get_month_names,
-    get_weeknumber_of_date,
-)
+from plotly_calplot.date_extractors import get_date_coordinates, get_month_names
 
 
 class TestUtils(TestCase):
@@ -49,10 +45,3 @@ class TestUtils(TestCase):
         self.assertEqual(len(weeknumber_of_dates), self.sample_dataframe.shape[0])
         self.assertTrue(max(weeknumber_of_dates) <= 53)
         self.assertTrue(min(weeknumber_of_dates) >= 0)
-
-    def test_should_get_weeknumber_of_date(self) -> None:
-        tested_date = datetime(2020, 12, 31)
-        result = get_weeknumber_of_date(tested_date)
-
-        self.assertEqual(result, 52)
-        self.assertEqual(type(result), int)

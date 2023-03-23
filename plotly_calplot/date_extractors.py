@@ -4,18 +4,27 @@ import numpy as np
 import pandas as pd
 
 
-def get_month_names(data: pd.DataFrame, x: str) -> List[str]:
-    return list(data[x].dt.month_name().unique())
+def get_month_names(
+    data: pd.DataFrame, x: str, start_month: int = 1, end_month: int = 12
+) -> List[str]:
+    start_month_names_filler = [None] * (start_month - 1)
+    end_month_names_filler = [None] * (12 - end_month)
+    month_names = list(
+        start_month_names_filler
+        + data[x].dt.month_name().unique().tolist()
+        + end_month_names_filler
+    )
+    return month_names
 
 
 def get_date_coordinates(
-    data: pd.DataFrame, x: str
+    data: pd.DataFrame, x: str, start_month: int, end_month: int
 ) -> Tuple[Any, List[float], List[int]]:
     month_days = []
     for m in data[x].dt.month.unique():
         month_days.append(data.loc[data[x].dt.month == m, x].max().day)
 
-    month_positions = (np.cumsum(month_days) - 15) / 7
+    month_positions = np.linspace(1.5, 50, 12)
     weekdays_in_year = [i.weekday() for i in data[x]]
 
     # sometimes the last week of the current year conflicts with next year's january

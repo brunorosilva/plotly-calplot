@@ -19,8 +19,8 @@ class TestUtils(TestCase):
             }
         )
 
-        final_df = fill_empty_with_zeros(selected_year_data, "ds", False, 2019)
-        self.assertTrue(final_df.shape[0] == 365)
+        final_df = fill_empty_with_zeros(selected_year_data, "ds", 2019, 1, 12)
+        self.assertEqual(final_df.shape[0], 365)
 
     def test_fill_empty_with_zeros_dark_theme(self) -> None:
         selected_year_data = pd.DataFrame(
@@ -33,6 +33,6 @@ class TestUtils(TestCase):
                 "y": [3231, 43415, 23123],
             }
         )
-        final_df = fill_empty_with_zeros(selected_year_data, "ds", False, 2019)
+        final_df = fill_empty_with_zeros(selected_year_data, "ds", 2019, 1, 12)
 
-        self.assertTrue(final_df.shape[0] == 365)
+        self.assertEqual(final_df.shape[0], 365)

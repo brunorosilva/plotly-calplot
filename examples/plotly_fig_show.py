@@ -5,7 +5,7 @@ from plotly_calplot.calplot import calplot, month_calplot
 
 # mock setup
 dummy_start_date = "2019-01-01"
-dummy_end_date = "2021-10-03"
+dummy_end_date = "2022-10-03"
 dummy_df = pd.DataFrame(
     {
         "ds": pd.date_range(dummy_start_date, dummy_end_date),
@@ -17,7 +17,15 @@ dummy_df = pd.DataFrame(
         ),
     }
 )
-fig1 = calplot(dummy_df, x="ds", y="value", dark_theme=True)
+fig1 = calplot(
+    dummy_df,
+    x="ds",
+    y="value",
+    showscale=True,
+    month_lines_width=3,
+    cmap_min=15,
+    years_title=True,
+)
 
 fig1.show()
 

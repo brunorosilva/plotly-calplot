@@ -4,6 +4,7 @@ env:
 on:
   release:
     types: [created]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -39,7 +40,8 @@ jobs:
         with:
           password: ${{ secrets.PLOTLY_DEV_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
-          skip_existing: true
+          skip-existing: true
+          verbose: true
 
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

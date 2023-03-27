@@ -45,4 +45,3 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PLOTLY_PRD_TOKEN }}
-          skip_existing: true

@@ -97,17 +97,28 @@ def update_plot_with_current_layout(
     row: int,
     layout: go.Layout,
     total_height: Optional[int],
+    years_as_columns: bool,
 ) -> go.Figure:
     fig.update_layout(layout)
     fig.update_xaxes(layout["xaxis"])
     fig.update_yaxes(layout["yaxis"])
     fig.update_layout(height=total_height)
-    fig.add_traces(cplt, rows=[(row + 1)] * len(cplt), cols=[1] * len(cplt))
+    if years_as_columns:
+        rows = [1] * len(cplt)
+        cols = [(row + 1)] * len(cplt)
+    else:
+        rows = [(row + 1)] * len(cplt)
+        cols = [1] * len(cplt)
+    fig.add_traces(cplt, rows=rows, cols=cols)
     return fig
 
 
-def apply_general_colorscaling(data: pd.DataFrame, y: str, fig: go.Figure) -> go.Figure:
-    return fig.update_traces(selector=dict(type="heatmap"), zmax=data[y].max(), zmin=0)
+def apply_general_colorscaling(
+    fig: go.Figure, cmap_min: float, cmap_max: float
+) -> go.Figure:
+    return fig.update_traces(
+        selector=dict(type="heatmap"), zmax=cmap_max, zmin=cmap_min
+    )
 
 
 def showscale_of_heatmaps(fig: go.Figure) -> go.Figure:

@@ -1,6 +1,7 @@
 from datetime import date
 from typing import Any, Dict, Optional
 
+import numpy as np
 from pandas import DataFrame, Grouper, Series
 from plotly import graph_objects as go
 from plotly.subplots import make_subplots
@@ -68,6 +69,11 @@ def calplot(
     space_between_plots: float = 0.08,
     showscale: bool = False,
     text: Optional[str] = None,
+    years_as_columns: bool = False,
+    cmap_min: Optional[float] = None,
+    cmap_max: Optional[float] = None,
+    start_month: int = 1,
+    end_month: int = 12,
 ) -> go.Figure:
     """
     Yearly Calendar Heatmap
@@ -119,15 +125,30 @@ def calplot(
         height, otherwise the total height will be calculated
         according to the amount of years in data
 
-    space_between_plots: float = 0.08
+    space_between_plots : float = 0.08
         controls the vertical space between the plots
 
-    showscale: bool = False
+    showscale : bool = False
         if True, a color legend will be created.
         Thanks to @ghhar98!
 
-    text: Optional[str] = None
+    text : Optional[str] = None
         The name of the column in data to include in hovertext.
+
+    years_as_columns : bool = False
+        if True will plot all years in a single line
+
+    cmap_min : float = None
+        colomap min, defaults to min value of the data
+
+    cmap_max : float = None
+        colomap max, defaults to max value of the data
+
+    start_month : int = 1
+        starting month range to plot, defaults to 1 (January)
+
+    end_month : int = 12
+        ending month range to plot, defaults to 12 (December)
     """
     unique_years = data[x].dt.year.unique()
     unique_years_amount = len(unique_years)
@@ -136,19 +157,43 @@ def calplot(
     else:
         subplot_titles = None
 
+    # single row calplot logic
+    if years_as_columns:
+        rows = 1
+        cols = unique_years_amount
+    else:
+        rows = unique_years_amount
+        cols = 1
+
+    # if single row calplot, the height can be constant
     if total_height is None:
-        total_height = 150 * unique_years_amount
+        if years_as_columns:
+            total_height = 150
+        else:
+            total_height = 150 * unique_years_amount
 
     fig = make_subplots(
-        unique_years_amount,
-        1,
+        rows=rows,
+        cols=cols,
         subplot_titles=subplot_titles,
         vertical_spacing=space_between_plots,
     )
+
+    # getting cmap_min and cmap_max
+    if cmap_min is None:
+        cmap_min = data[y].min()
+
+    if cmap_max is None:
+        cmap_max = data[y].max()
+
+    data = data[
+        data[x].dt.month.isin(np.arange(start_month, end_month + 1, 1).tolist())
+    ]
+
     for i, year in enumerate(unique_years):
         selected_year_data = data.loc[data[x].dt.year == year]
         selected_year_data = fill_empty_with_zeros(
-            selected_year_data, x, dark_theme, year
+            selected_year_data, x, year, start_month, end_month
         )
 
         year_calplot(
@@ -169,9 +214,12 @@ def calplot(
             total_height=total_height,
             text=None if text is None else selected_year_data[text].tolist(),
             text_name=text,
+            years_as_columns=years_as_columns,
+            start_month=start_month,
+            end_month=end_month,
         )
 
-    fig = apply_general_colorscaling(data, y, fig)
+    fig = apply_general_colorscaling(fig, cmap_min, cmap_max)
     if showscale:
         fig = showscale_of_heatmaps(fig)
 

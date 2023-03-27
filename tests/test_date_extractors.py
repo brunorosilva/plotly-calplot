@@ -34,10 +34,10 @@ class TestUtils(TestCase):
 
     def test_should_get_date_right_coordinates(self) -> None:
         month_positions, weekdays_in_year, weeknumber_of_dates = get_date_coordinates(
-            self.sample_dataframe, "ds"
+            self.sample_dataframe, "ds", 1, 5
         )
 
-        self.assertTrue(len(month_positions) == 4)
+        self.assertEqual(len(month_positions), 12)
         self.assertTrue(type(month_positions) == np.ndarray)
         self.assertEqual(len(weekdays_in_year), self.sample_dataframe.shape[0])
         self.assertTrue(max(weekdays_in_year) <= 6)

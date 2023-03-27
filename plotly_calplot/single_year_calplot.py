@@ -30,14 +30,17 @@ def year_calplot(
     total_height: int = None,
     text: Optional[List[str]] = None,
     text_name: Optional[str] = None,
+    years_as_columns: bool = False,
+    start_month: int = 1,
+    end_month: int = 12,
 ) -> go.Figure:
     """
     Each year is subplotted separately and added to the main plot
     """
 
-    month_names = get_month_names(data, x)
+    month_names = get_month_names(data, x, start_month, end_month)
     month_positions, weekdays_in_year, weeknumber_of_dates = get_date_coordinates(
-        data, x
+        data, x, start_month, end_month
     )
 
     # the calendar is actually a heatmap :)
@@ -66,6 +69,8 @@ def year_calplot(
         )
 
     layout = decide_layout(dark_theme, title, month_names, month_positions)
-    fig = update_plot_with_current_layout(fig, cplt, row, layout, total_height)
+    fig = update_plot_with_current_layout(
+        fig, cplt, row, layout, total_height, years_as_columns
+    )
 
     return fig

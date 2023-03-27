@@ -10,7 +10,7 @@ dummy_df = pd.DataFrame(
     {
         "ds": pd.date_range(dummy_start_date, dummy_end_date),
         "value": np.random.randint(
-            0,
+            -10,
             30,
             (pd.to_datetime(dummy_end_date) - pd.to_datetime(dummy_start_date)).days
             + 1,
@@ -21,10 +21,6 @@ fig1 = calplot(
     dummy_df,
     x="ds",
     y="value",
-    showscale=True,
-    month_lines_width=3,
-    cmap_min=15,
-    years_title=True,
 )
 
 fig1.show()

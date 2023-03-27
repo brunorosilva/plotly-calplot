@@ -75,4 +75,4 @@ jobs:
         with:
           password: ${{ secrets.PLOTLY_DEV_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
-          skip_existing: true
+          verbose: true

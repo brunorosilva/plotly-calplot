@@ -39,6 +39,9 @@ jobs:
       - name: Run formatter
         run: make lint
 
+      - name: Install missing stubs
+        run: mypy --install-types
+
       - name: Run checks
         run: make checks
 

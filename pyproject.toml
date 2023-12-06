@@ -10,7 +10,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0.0"
 plotly = "^5.4.0"
-pandas = "^1.0.5"
+pandas = "*"
 numpy = "^1.22.3"
 
 [tool.poetry.dev-dependencies]

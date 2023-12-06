@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pandas.core.frame import DataFrame
 from plotly import graph_objects as go
@@ -27,7 +27,7 @@ def year_calplot(
     colorscale: str = "greens",
     title: str = "",
     month_lines: bool = True,
-    total_height: int = None,
+    total_height: Union[int, None] = None,
     text: Optional[List[str]] = None,
     text_name: Optional[str] = None,
     years_as_columns: bool = False,
@@ -40,7 +40,7 @@ def year_calplot(
 
     month_names = get_month_names(data, x, start_month, end_month)
     month_positions, weekdays_in_year, weeknumber_of_dates = get_date_coordinates(
-        data, x, start_month, end_month
+        data, x
     )
 
     # the calendar is actually a heatmap :)

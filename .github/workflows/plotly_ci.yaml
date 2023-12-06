@@ -39,6 +39,9 @@ jobs:
       - name: Run formatter
         run: make lint
 
+      - name: Run stubs install
+        run: make stubs
+
       - name: Run checks
         run: make checks
 

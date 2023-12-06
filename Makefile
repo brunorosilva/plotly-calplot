@@ -21,6 +21,10 @@ checks:
 	@poetry run pytest tests/
 	@poetry run poetry check
 
+stubs:
+	@poetry run mypy --install-types --non-interactive plotly_calplot
+	@poetry run python3 -m pip install types-pytz
+
 pypi_deploy:
 	@poetry config pypi-token.pypi $(PLOTLY_PRD_TOKEN)
 	@poetry build

@@ -40,7 +40,7 @@ jobs:
         run: make lint
 
       - name: Install missing stubs
-        run: mypy --install-types --non-interactive plotly_calplot
+        run: mypy --install-types --non-interactive
 
       - name: Run checks
         run: make checks

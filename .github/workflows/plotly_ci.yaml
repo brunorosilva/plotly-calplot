@@ -39,9 +39,8 @@ jobs:
       - name: Run formatter
         run: make lint
 
-      - run: |
-          pip3 install mypy
-          mypy --install-types --non-interactive
+      - name: Run stubs install
+        run: poetry run mypy --install-types --non-interactive
 
       - name: Run checks
         run: make checks

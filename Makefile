@@ -22,7 +22,7 @@ checks:
 	@poetry run poetry check
 
 stubs:
-	@poetry run mypy --install-types --non-interactive
+	@poetry run mypy --install-types --non-interactive plotly_calplot
 
 pypi_deploy:
 	@poetry config pypi-token.pypi $(PLOTLY_PRD_TOKEN)

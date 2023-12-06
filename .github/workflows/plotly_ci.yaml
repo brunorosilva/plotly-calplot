@@ -40,7 +40,7 @@ jobs:
         run: make lint
 
       - name: Run stubs install
-        run: poetry run mypy --install-types --non-interactive
+        run: make stubs
 
       - name: Run checks
         run: make checks

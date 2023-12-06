@@ -21,6 +21,9 @@ checks:
 	@poetry run pytest tests/
 	@poetry run poetry check
 
+stubs:
+	@poetry run mypy --install-types --non-interactive
+
 pypi_deploy:
 	@poetry config pypi-token.pypi $(PLOTLY_PRD_TOKEN)
 	@poetry build

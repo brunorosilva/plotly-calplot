@@ -42,7 +42,6 @@ class TestLayouting(TestCase):
         result_layout = decide_layout(
             False, "title", ["January", "March", "April"], [0, 1, 2]
         )
-        print(result_layout)
         self.assertTrue(type(result_layout) == go.Layout)
 
     def test_should_create_month_lines(self) -> None:

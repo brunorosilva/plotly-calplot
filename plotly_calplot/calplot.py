@@ -156,9 +156,7 @@ def calplot(
         If the date column is already in datetime format, this parameter
         will be ignored.
     """
-    print(data[x])
     data[x] = validate_date_column(data[x], date_fmt)
-    print(data[x])
     unique_years = data[x].dt.year.unique()
     unique_years_amount = len(unique_years)
     if years_title:

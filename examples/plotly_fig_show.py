@@ -8,7 +8,7 @@ dummy_start_date = "2019-01-01"
 dummy_end_date = "2022-10-03"
 dummy_df = pd.DataFrame(
     {
-        "ds": pd.date_range(dummy_start_date, dummy_end_date),
+        "ds": pd.date_range(dummy_start_date, dummy_end_date, tz="Singapore"),
         "value": np.random.randint(
             -10,
             30,
@@ -17,6 +17,7 @@ dummy_df = pd.DataFrame(
         ),
     }
 )
+
 fig1 = calplot(
     dummy_df,
     x="ds",
@@ -30,7 +31,5 @@ fig2 = month_calplot(
     dummy_df,
     x="ds",
     y="value",
-    dark_theme=True,
-    showscale=True,
 )
 fig2.show()

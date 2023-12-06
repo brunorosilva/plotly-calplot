@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 import numpy as np
 from pandas import DataFrame, Grouper, Series
@@ -11,7 +11,7 @@ from plotly_calplot.layout_formatter import (
     showscale_of_heatmaps,
 )
 from plotly_calplot.single_year_calplot import year_calplot
-from plotly_calplot.utils import fill_empty_with_zeros
+from plotly_calplot.utils import fill_empty_with_zeros, validate_date_column
 
 
 def _get_subplot_layout(**kwargs: Any) -> go.Layout:
@@ -65,7 +65,7 @@ def calplot(
     colorscale: str = "greens",
     title: str = "",
     month_lines: bool = True,
-    total_height: int = None,
+    total_height: Union[int, None] = None,
     space_between_plots: float = 0.08,
     showscale: bool = False,
     text: Optional[str] = None,
@@ -74,6 +74,7 @@ def calplot(
     cmap_max: Optional[float] = None,
     start_month: int = 1,
     end_month: int = 12,
+    date_fmt: str = "%Y-%m-%d",
 ) -> go.Figure:
     """
     Yearly Calendar Heatmap
@@ -149,7 +150,15 @@ def calplot(
 
     end_month : int = 12
         ending month range to plot, defaults to 12 (December)
+
+    date_fmt : str = "%Y-%m-%d"
+        date format for the date column in data, defaults to "%Y-%m-%d"
+        If the date column is already in datetime format, this parameter
+        will be ignored.
     """
+    print(data[x])
+    data[x] = validate_date_column(data[x], date_fmt)
+    print(data[x])
     unique_years = data[x].dt.year.unique()
     unique_years_amount = len(unique_years)
     if years_title:
@@ -236,8 +245,9 @@ def month_calplot(
     colorscale: str = "greens",
     title: str = "",
     year_height: int = 30,
-    total_height: int = None,
+    total_height: Union[int, None] = None,
     showscale: bool = False,
+    date_fmt: str = "%Y-%m-%d",
 ) -> go.Figure:
     """
     Yearly Calendar Heatmap by months (12 cols per row)
@@ -279,6 +289,11 @@ def month_calplot(
 
     showscale : bool = False
         wether to show the scale of the data
+
+    date_fmt : str = "%Y-%m-%d"
+        date format for the date column in data, defaults to "%Y-%m-%d"
+        If the date column is already in datetime format, this parameter
+        will be ignored.
     """
     if data is None:
         if not isinstance(x, Series):
@@ -291,6 +306,8 @@ def month_calplot(
 
         x = x.name
         y = y.name
+
+    data[x] = validate_date_column(data[x], date_fmt)
 
     gData = data.set_index(x)[y].groupby(Grouper(freq="M")).sum()
     unique_years = gData.index.year.unique()

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pandas.core.frame import DataFrame
 from plotly import graph_objects as go
@@ -27,7 +27,7 @@ def year_calplot(
     colorscale: str = "greens",
     title: str = "",
     month_lines: bool = True,
-    total_height: int = None,
+    total_height: Union[int, None] = None,
     text: Optional[List[str]] = None,
     text_name: Optional[str] = None,
     years_as_columns: bool = False,

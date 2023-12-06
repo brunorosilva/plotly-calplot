@@ -34,7 +34,7 @@ class TestUtils(TestCase):
 
     def test_should_get_date_right_coordinates(self) -> None:
         month_positions, weekdays_in_year, weeknumber_of_dates = get_date_coordinates(
-            self.sample_dataframe, "ds", 1, 5
+            self.sample_dataframe, "ds"
         )
 
         self.assertEqual(len(month_positions), 12)

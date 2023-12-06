@@ -40,7 +40,7 @@ def year_calplot(
 
     month_names = get_month_names(data, x, start_month, end_month)
     month_positions, weekdays_in_year, weeknumber_of_dates = get_date_coordinates(
-        data, x, start_month, end_month
+        data, x
     )
 
     # the calendar is actually a heatmap :)

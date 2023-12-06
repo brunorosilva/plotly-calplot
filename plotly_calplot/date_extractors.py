@@ -18,7 +18,7 @@ def get_month_names(
 
 
 def get_date_coordinates(
-    data: pd.DataFrame, x: str, start_month: int, end_month: int
+    data: pd.DataFrame, x: str
 ) -> Tuple[Any, List[float], List[int]]:
     month_days = []
     for m in data[x].dt.month.unique():

@@ -2,18 +2,23 @@ from typing import Any, List, Tuple
 
 import numpy as np
 import pandas as pd
+import calendar
 
 
 def get_month_names(
-    data: pd.DataFrame, x: str, start_month: int = 1, end_month: int = 12
+    data: pd.DataFrame, x: str, start_month: int = 1, end_month: int = 12, show_empty_months = True
 ) -> List[str]:
-    start_month_names_filler = [None] * (start_month - 1)
-    end_month_names_filler = [None] * (12 - end_month)
-    month_names = list(
-        start_month_names_filler
-        + data[x].dt.month_name().unique().tolist()
-        + end_month_names_filler
-    )
+    if show_empty_months:
+        start_month_names_filler = [None] * (start_month - 1)
+        end_month_names_filler = [None] * (12 - end_month)
+        month_names = list(
+            start_month_names_filler
+            + data[x].dt.month_name().unique().tolist()
+            + end_month_names_filler
+        )
+    else:
+        month_names = list(calendar.month_name)[1:]    
+
     return month_names
 
 

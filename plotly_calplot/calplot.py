@@ -75,6 +75,7 @@ def calplot(
     start_month: int = 1,
     end_month: int = 12,
     date_fmt: str = "%Y-%m-%d",
+    show_empty_months: bool = True,
 ) -> go.Figure:
     """
     Yearly Calendar Heatmap
@@ -155,6 +156,9 @@ def calplot(
         date format for the date column in data, defaults to "%Y-%m-%d"
         If the date column is already in datetime format, this parameter
         will be ignored.
+
+    show_empty_months : bool = True
+        if True heatmaps will display months that have no data
     """
     data[x] = validate_date_column(data[x], date_fmt)
     unique_years = data[x].dt.year.unique()
@@ -199,9 +203,10 @@ def calplot(
 
     for i, year in enumerate(unique_years):
         selected_year_data = data.loc[data[x].dt.year == year]
-        selected_year_data = fill_empty_with_zeros(
-            selected_year_data, x, year, start_month, end_month
-        )
+        if show_empty_months:
+            selected_year_data = fill_empty_with_zeros(
+                selected_year_data, x, year, start_month, end_month
+            )
 
         year_calplot(
             selected_year_data,
@@ -224,6 +229,7 @@ def calplot(
             years_as_columns=years_as_columns,
             start_month=start_month,
             end_month=end_month,
+            show_empty_months=show_empty_months,
         )
 
     fig = apply_general_colorscaling(fig, cmap_min, cmap_max)

@@ -1,18 +1,29 @@
-[tool.poetry]
+[project]
 name = "plotly_calplot"
 version = "0.1.21"
 description = "Calendar Plot made with Plotly"
-authors = ["Bruno Rodrigues Silva <b.rosilva1@gmail.com>"]
-license = "MIT"
-repository = "https://github.com/brunorosilva/plotly-calplot"
+authors = [
+    {name = "Bruno Rodrigues Silva", email = "b.rosilva1@gmail.com"}
+]
+license = {text = "MIT"}
 readme = "README.md"
+requires-python = ">=3.8,<4.0.0"
+dependencies = [
+    "plotly>=6.3.0,<6.4.0",
+    "pandas",
+    "numpy>=1.22.3,<2.0.0",
+    "pytz>=2023.3.post1,<2024.0.0",
+]
+
+[project.urls]
+Repository = "https://github.com/brunorosilva/plotly-calplot"
+
+[tool.poetry]
+# Poetry will read from [project] section above for metadata
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0.0"
-plotly = "^6.3.0"
-pandas = "*"
-numpy = "^1.22.3"
-pytz = "^2023.3.post1"
+# Main dependencies are defined in [project.dependencies] above
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.0"

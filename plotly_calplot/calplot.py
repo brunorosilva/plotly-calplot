@@ -307,7 +307,7 @@ def month_calplot(
 
     data[x] = validate_date_column(data[x], date_fmt)
 
-    gData = data.set_index(x)[y].groupby(Grouper(freq="M")).sum()
+    gData = data.set_index(x)[y].groupby(Grouper(freq="ME")).sum()
     unique_years = gData.index.year.unique()
     unique_years_amount = len(unique_years)
 

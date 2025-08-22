@@ -9,7 +9,7 @@ license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.8,<4.0.0"
 dependencies = [
-    "plotly>=6.3.0,<6.4.0",
+    "plotly>=5.4.0,<6.4.0",
     "pandas",
     "numpy>=1.22.3,<2.0.0",
     "pytz>=2023.3.post1,<2024.0.0",

@@ -9,10 +9,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0.0"
-plotly = "^5.4.0"
+plotly = "^5.4.0,<7.0.0"
 pandas = "*"
 numpy = "^1.22.3"
-pytz = "^2023.3.post1"
+pytz = ">=2023.3.post1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^21.12b0"

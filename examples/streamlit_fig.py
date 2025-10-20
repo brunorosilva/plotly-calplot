@@ -5,7 +5,7 @@ import streamlit as st
 from plotly_calplot.calplot import calplot
 
 # mock setup
-dummy_start_date = "2019-01-01"
+dummy_start_date = "2019-05-01"
 dummy_end_date = "2021-10-03"
 dummy_df = pd.DataFrame(
     {
@@ -22,6 +22,7 @@ fig = calplot(
     dummy_df,
     x="ds",
     y="value",
+    hide_empty_months=True,
 )
 
 st.plotly_chart(fig)

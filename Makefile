@@ -10,7 +10,7 @@ lint:
 	@poetry run isort .
 
 install:
-	@curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+	@pip3 install poetry
 	@poetry install
 
 checks:

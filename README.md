@@ -1,7 +1,7 @@
 # Calendar Heatmap with Plotly - Archived
 Making it easier to visualize and costumize time relevant or time series data with plotly interaction.
 
-I'll not be maintaining this project any longer (and I haven't for quite some time) - please use Thomaz [plotly-calheatmap instead](https://github.com/thomazyujibaba/plotly-calheatmap)
+**Important** - I'll not be maintaining this project any longer (and I haven't for quite some time) - please use Thomaz [plotly-calheatmap instead](https://github.com/thomazyujibaba/plotly-calheatmap)
 
 New to the library? Read [this Medium article](https://medium.com/@brunorosilva/5fc322125db7).
 

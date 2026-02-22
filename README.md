@@ -3,6 +3,7 @@ Making it easier to visualize and costumize time relevant or time series data wi
 
 **Important** - I'll not be maintaining this project any longer (and I haven't for quite some time) - please use Thomaz [plotly-calheatmap instead](https://github.com/thomazyujibaba/plotly-calheatmap)
 
+---
 New to the library? Read [this Medium article](https://medium.com/@brunorosilva/5fc322125db7).
 
 This plot is a very similar to the contribuitions available on Github and Gitlab profile pages and to [Calplot](https://github.com/tomkwok/calplot) - which is a pyplot implementation of the calendar heatmap, thus it is not interactive right off the bat.

@@ -235,8 +235,8 @@ def calplot(
 
 def month_calplot(
     data: DataFrame = None,
-    x: str = "x",
-    y: str = "y",
+    x: str | Series = "x",
+    y: str | Series = "y",
     name: str = "y",
     dark_theme: bool = False,
     gap: int = 2,
@@ -307,7 +307,7 @@ def month_calplot(
 
     data[x] = validate_date_column(data[x], date_fmt)
 
-    gData = data.set_index(x)[y].groupby(Grouper(freq="M")).sum()
+    gData = data.set_index(x)[y].groupby(Grouper(freq="ME")).sum()
     unique_years = gData.index.year.unique()
     unique_years_amount = len(unique_years)
 
@@ -329,7 +329,7 @@ def month_calplot(
     )
 
     # hovertext = _gen_hoverText(gData.index.month, gData.index.year, gData)
-    hovertext = gData.apply(lambda x: f"{x:.0f}")
+    hovertext = gData.apply(lambda x: f"{x: .0f}")
 
     cplt = go.Heatmap(
         x=gData.index.month,
